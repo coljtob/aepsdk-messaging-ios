@@ -14,19 +14,49 @@ import AEPCore
 import AEPMessaging
 import AEPServices
 import AEPAssurance
+import AEPEdgeIdentity
+
 import UIKit
 import UserNotifications
 import WebKit
 import UserNotifications
 
 class ViewController: UIViewController {
+    
+
+    
+    @IBOutlet var field:UITextField!
+    @IBOutlet var ecid:UITextField!
+    @IBOutlet var button:UIButton!
+
     @IBOutlet var switchShowMessages: UISwitch?
 
     private let messageHandler = MessageHandler()
     
+    private let incoming_ecid = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         MobileCore.messagingDelegate = messageHandler
+        field.delegate = self
+    }
+    
+    
+    
+    @IBAction func showECID(_ sender: UIButton) {
+        
+        Identity.getExperienceCloudId { (new_ecid, error) in
+          if let error = error {
+            // Handle the error here
+              print(error)
+          } else {
+              self.ecid.text = new_ecid
+          }
+        }
+         
+    
+        print("Hi collin")
+        
     }
 
     @IBAction func triggerFullscreen(_: Any) {
@@ -220,3 +250,15 @@ class ViewController: UIViewController {
         }
     }
 }
+
+extension ViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // send to launch ID registration
+        let launchId = textField.text
+        // va7: 3149c49c3910/84e9aaeba325/launch-f58d479d8188-development
+        print("\(launchId)")
+        MobileCore.configureWith(appId: launchId!)
+        return true
+    }
+}
+
