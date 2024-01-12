@@ -37,8 +37,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // let launchId = "3149c49c3910/84e9aaeba325/launch-f58d479d8188-development";
-        // MobileCore.configureWith(appId: launchId)
         MobileCore.messagingDelegate = messageHandler
         field.delegate = self
     }

@@ -7,6 +7,7 @@
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.com.adobe.MessagingDemoApp</string>
+		<string>group.com.adobe.cuc.e2e.messagingdemoapp</string>
 	</array>
 </dict>
 </plist>
