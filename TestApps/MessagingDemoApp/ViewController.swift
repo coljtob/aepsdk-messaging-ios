@@ -37,6 +37,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // let launchId = "3149c49c3910/84e9aaeba325/launch-f58d479d8188-development";
+        // MobileCore.configureWith(appId: launchId)
         MobileCore.messagingDelegate = messageHandler
         field.delegate = self
     }
@@ -51,6 +53,7 @@ class ViewController: UIViewController {
               print(error)
           } else {
               self.ecid.text = new_ecid
+              self.ecid.resignFirstResponder()
           }
         }
          
@@ -253,6 +256,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
         // send to launch ID registration
         let launchId = textField.text
         // va7: 3149c49c3910/84e9aaeba325/launch-f58d479d8188-development

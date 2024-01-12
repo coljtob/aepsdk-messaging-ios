@@ -51,6 +51,19 @@ archive: clean pod-install build
 		-framework $(IOS_ARCHIVE_PATH)$(EXTENSION_NAME).framework -debug-symbols $(IOS_ARCHIVE_DSYM_PATH)$(EXTENSION_NAME).framework.dSYM \
 		-output ./build/$(TARGET_NAME_XCFRAMEWORK)
 
+# Builds the test apps
+build-test-apps-sim: pod-install
+	xcodebuild -workspace $(PROJECT_NAME).xcworkspace -scheme MessagingDemoApp -derivedDataPath ./build -sdk iphonesimulator build
+	(cd build/Build/Products/Debug-iphonesimulator/ && zip -r MessagingDemoApp.zip MessagingDemoApp.app)
+	(cp build/Build/Products/Debug-iphonesimulator/MessagingDemoApp.zip TestAppBinaries/)
+
+# Builds the test apps
+build-test-apps-real: pod-install
+	xcodebuild -workspace $(PROJECT_NAME).xcworkspace -scheme MessagingDemoApp -derivedDataPath ./build -sdk iphoneos build
+	(cd build/Build/Products/Debug-iphoneos/ && zip -r MessagingDemoApp MessagingDemoApp.app/)
+	(cp build/Build/Products/Debug-iphoneos/MessagingDemoApp.zip TestAppBinaries/)
+
+
 build:
 	xcodebuild archive -workspace $(PROJECT_NAME).xcworkspace -scheme $(SCHEME_NAME_XCFRAMEWORK) -archivePath "./build/ios.xcarchive" -sdk iphoneos -destination="iOS" SKIP_INSTALL=NO BUILD_LIBRARIES_FOR_DISTRIBUTION=YES
 	xcodebuild archive -workspace $(PROJECT_NAME).xcworkspace -scheme $(SCHEME_NAME_XCFRAMEWORK) -archivePath "./build/ios_simulator.xcarchive" -sdk iphonesimulator -destination="iOS Simulator" SKIP_INSTALL=NO BUILD_LIBRARIES_FOR_DISTRIBUTION=YES
