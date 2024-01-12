@@ -10,6 +10,7 @@ SIMULATOR_ARCHIVE_DSYM_PATH = $(CURRENT_DIRECTORY)/build/ios_simulator.xcarchive
 IOS_ARCHIVE_PATH = $(CURRENT_DIRECTORY)/build/ios.xcarchive/Products/Library/Frameworks/
 IOS_ARCHIVE_DSYM_PATH = $(CURRENT_DIRECTORY)/build/ios.xcarchive/dSYMs/
 IOS_DESTINATION = 'platform=iOS Simulator,name=iPhone 14'
+SAUCE_API_KEY := $(shell echo $$SAUCE_KEY)
 
 E2E_PROJECT_PLIST_FILE = $(CURRENT_DIRECTORY)/AEPMessaging/Tests/E2EFunctionalTests/E2EFunctionalTestApp/Info.plist
 
@@ -71,13 +72,25 @@ install-githook:
 format: lint-autocorrect swift-format
 
 
+print_variable:
+    @echo "SAUCE_KEY has the value: $(SAUCE_API_KEY)"
+
 # Builds the test apps
-build-test-apps-real: pod-install
+build-test-apps-real: print_variable pod-install
 	xcodebuild -workspace $(PROJECT_NAME).xcworkspace -scheme MessagingDemoApp -derivedDataPath ./build -sdk iphoneos build
 	(cd build/Build/Products/Debug-iphoneos/ && zip -r MessagingDemoApp MessagingDemoApp.app/)
-	(cp build/Build/Products/Debug-iphoneos/MessagingDemoApp.zip TestAppBinaries/)
+	mkdir TestAppBinaries/Payload
+	(cp -r build/Build/Products/Debug-iphoneos/MessagingDemoApp.app TestAppBinaries/Payload)
+	(cd TestAppBinaries && zip -r Payload Payload)
+	(cd TestAppBinaries && mv Payload.zip MessagingDemoApp.ipa)
+	(cd TestAppBinaries && rm -rf Payload)
+	make upload-sauce
 
-
+# upload to sauce
+upload-sauce:
+	#delete old app
+	bash cleanSauceBinaries.sh
+	curl -X POST -H "Content-Type: multipart/form-data" -F "payload=@/Users/ctobin/Desktop/git_stuff/aepsdk-messaging-ios/TestAppBinaries/MessagingDemoApp.ipa" -u 'coljtob:$(SAUCE_API_KEY)' -F name=MessagingDemoApp.ipa https://api.us-west-1.saucelabs.com/v1/storage/upload
 
 # Builds the test apps
 build-test-apps-sim: pod-install
