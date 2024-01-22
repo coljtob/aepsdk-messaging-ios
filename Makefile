@@ -96,7 +96,13 @@ upload-sauce:
 build-test-apps-sim: pod-install
 	xcodebuild -workspace $(PROJECT_NAME).xcworkspace -scheme MessagingDemoApp -derivedDataPath ./build -sdk iphonesimulator build
 	(cd build/Build/Products/Debug-iphoneos/ && zip -r MessagingDemoApp_sim MessagingDemoApp.app/)
-	(cp build/Build/Products/Debug-iphoneos/MessagingDemoApp_sim.zip TestAppBinaries/)
+	mkdir TestAppBinaries/Payload
+	(cp -r build/Build/Products/Debug-iphonesimulator/MessagingDemoApp.app TestAppBinaries/Payload)
+	(cd TestAppBinaries && zip -r Payload Payload)
+	(cd TestAppBinaries && mv Payload.zip MessagingDemoApp.ipa)
+	(cd TestAppBinaries && rm -rf Payload)
+	make upload-sauce
+	
 
 
 
