@@ -77,7 +77,7 @@ print_variable:
 
 # Builds the test apps
 build-test-apps-real: print_variable pod-install
-	xcodebuild -workspace $(PROJECT_NAME).xcworkspace -scheme MessagingDemoApp -derivedDataPath ./build -sdk iphoneos build
+	xcodebuild build -workspace $(PROJECT_NAME).xcworkspace -scheme MessagingDemoApp -derivedDataPath ./build -sdk iphoneos build CODE_SIGN_IDENTITY="Apple Development"
 	(cd build/Build/Products/Debug-iphoneos/ && zip -r MessagingDemoApp MessagingDemoApp.app/)
 	mkdir TestAppBinaries/Payload
 	(cp -r build/Build/Products/Debug-iphoneos/MessagingDemoApp.app TestAppBinaries/Payload)
