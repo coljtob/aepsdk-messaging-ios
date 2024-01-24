@@ -84,7 +84,7 @@ build-test-apps-real: print_variable pod-install
 	(cd TestAppBinaries && zip -r Payload Payload)
 	(cd TestAppBinaries && mv Payload.zip MessagingDemoApp.ipa)
 	(cd TestAppBinaries && rm -rf Payload)
-	make upload-sauce
+	make upload-sauce 
 
 
 # Builds the test apps
