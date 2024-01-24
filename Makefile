@@ -86,6 +86,19 @@ build-test-apps-real: print_variable pod-install
 	(cd TestAppBinaries && rm -rf Payload)
 	make upload-sauce
 
+
+# Builds the test apps
+build-test-apps-real-from-ide: print_variable pod-install
+	# xcodebuild build -workspace $(PROJECT_NAME).xcworkspace -scheme MessagingDemoApp -derivedDataPath ./build -sdk iphoneos build CODE_SIGN_IDENTITY="Apple Development"
+	(cd build/Build/Products/Debug-iphoneos/ && zip -r MessagingDemoApp MessagingDemoApp.app/)
+	mkdir TestAppBinaries/Payload
+	(cp -r build/Build/Products/Debug-iphoneos/MessagingDemoApp.app TestAppBinaries/Payload)
+	(cd TestAppBinaries && zip -r Payload Payload)
+	(cd TestAppBinaries && mv Payload.zip MessagingDemoApp.ipa)
+	(cd TestAppBinaries && rm -rf Payload)
+	make upload-sauce
+
+
 # upload to sauce
 upload-sauce:
 	#delete old app
